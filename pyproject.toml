@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "pd42s1-motor"
+version = "1.0.0"
+description = "PD42S1 closed-loop stepper motor control library (native serial protocol)"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+keywords = ["stepper-motor", "pd42s1", "serial", "motor-control", "microscope"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+dependencies = [
+    "pyserial>=3.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/chenboen-654/pd42s1-motor"
+Source = "https://github.com/chenboen-654/pd42s1-motor"
+
+[project.scripts]
+pd42s1-cli = "pd42s1_motor.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["pd42s1_motor*"]

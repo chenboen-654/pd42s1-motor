@@ -1,0 +1,45 @@
+"""PD42S1 command builders — re-exports from all submodules."""
+# fmt: off
+from .system import (
+    read_firmware_version, read_flux, read_resistance_inductance,
+    read_current, read_voltage, read_pid_float, read_pid_uint32,
+    write_pid_uint32, read_encoder_resolution, read_speed_rpm,
+    read_position, write_position, read_control_mode, write_control_mode,
+    read_run_current, write_run_current, read_enable_state, read_all_status,
+    read_motor_params, write_motor_params,
+    read_device_address, write_device_address,
+    read_sync_group, write_sync_group,
+    read_baudrate, write_baudrate,
+    read_velocity_pid, write_velocity_pid,
+    read_current_limit, write_current_limit,
+    read_microstep, write_microstep,
+    read_holding_current, write_holding_current,
+    read_serial_baudrate, write_serial_baudrate,
+    read_can_baudrate, write_can_baudrate,
+    read_direction, write_direction,
+    read_enable_mode, write_enable_mode,
+    save_params, reset_motor, restore_defaults,
+    read_io, write_io,
+    read_position_pid, write_position_pid,
+)
+from .motor import (
+    cmd_torque_mode, cmd_speed_mode,
+    cmd_move_relative, cmd_move_absolute, cmd_stop,
+    cmd_stp_pwm_position, cmd_stp_pwm_current, cmd_stp_pwm_speed,
+    cmd_enable, cmd_disable,
+    read_enabled, write_enabled,
+    cmd_set_origin, cmd_clear_alarm,
+    cmd_position_mode_abs, cmd_position_mode_rel, cmd_position_io_mode,
+    cmd_position_mode_stop, cmd_io_speed_mode,
+)
+from .advanced import (
+    read_encoder_offset, write_encoder_offset,
+    cmd_auto_pid_tune,
+    read_pid_mode, write_pid_mode,
+    cmd_save_user_params,
+    read_position_tracking,
+    read_timeout, write_timeout,
+    read_alarm_state, cmd_clear_alarm_v2,
+    read_target_position, write_target_position,
+    read_encoder_dir, write_encoder_dir,
+)
