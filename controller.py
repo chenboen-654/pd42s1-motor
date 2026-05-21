@@ -177,7 +177,7 @@ class MotorController:
         self._speed_rpm = speed_rpm
 
     def set_current(self, current_ma: int):
-        """Set run current in mA."""
+        """Set target current in mA (0x66)."""
         reply = self.send(C.write_run_current(current_ma))
         if self._check_ok(reply):
             self._current_ma = current_ma
@@ -203,16 +203,16 @@ class MotorController:
             return self.disable()
 
     def is_enabled(self) -> Optional[bool]:
-        reply = self.send(C.read_enabled())
-        if reply:
-            return reply.get("status") == 0x01
+        reply = self.send(C.read_enabled_state())
+        if reply and len(reply["data"]) >= 2:
+            return reply["data"][1] == 0  # 0=enabled, 1=disabled
         return None
 
     # -- Stop / emergency --
 
     def stop(self) -> bool:
-        """Emergency stop."""
-        reply = self.send(C.cmd_stop())
+        """Emergency stop (0xFC immediate brake)."""
+        reply = self.send(C.cmd_immediate_stop())
         return self._check_ok(reply)
 
     # -- Position read --
@@ -223,11 +223,6 @@ class MotorController:
         if reply and len(reply["data"]) >= 5:
             return unpack_int32_be(reply["data"], 1)
         return None
-
-    def set_position(self, pos: int) -> bool:
-        """Set encoder position (override)."""
-        reply = self.send(C.write_position(pos))
-        return self._check_ok(reply)
 
     # -- Movement --
 
@@ -325,19 +320,11 @@ class MotorController:
             return reply["data"][1]
         return None
 
-    # -- Position IO mode --
-
-    def position_io_mode(self, direction: int, accel: int,
-                         speed_rpm: int, position: int) -> bool:
-        """Move to position triggered by IO signal."""
-        reply = self.send(C.cmd_position_io_mode(direction, accel, speed_rpm, position))
-        return self._check_ok(reply)
-
     # -- Set origin / home --
 
     def set_origin(self) -> bool:
-        """Set current position as zero."""
-        reply = self.send(C.cmd_set_origin())
+        """Clear current position/angle to zero (0xF8)."""
+        reply = self.send(C.cmd_clear_position())
         return self._check_ok(reply)
 
     # -- Microstep --
@@ -356,17 +343,15 @@ class MotorController:
     # -- PID tuning for microscope (soft, smooth) --
 
     def tune_pid_soft(self) -> bool:
-        """设置显微镜 Z 轴适用的柔和 PID 参数。
+        """设置显微镜 Z 轴适用的柔和位置环 PID 参数 (0x63)。
 
         降低 P 增益、增大 D 阻尼，减少闭环过冲和微震。
-        PD42S1 的 PID 值域通常是 0~65535 (uint32)。
         """
-        # 柔和参数: 低 P、低 I、适中 D
         soft_p, soft_i, soft_d = 500, 50, 200
-        reply = self.send(C.write_pid_uint32(soft_p, soft_i, soft_d))
+        reply = self.send(C.write_position_pid(soft_p, soft_i, soft_d))
         ok = self._check_ok(reply)
         if ok:
-            logger.info(f"PID set to soft: P={soft_p} I={soft_i} D={soft_d}")
+            logger.info(f"Position PID set to soft: P={soft_p} I={soft_i} D={soft_d}")
         return ok
 
     # -- Utility --

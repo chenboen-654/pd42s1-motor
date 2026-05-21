@@ -42,10 +42,18 @@ STATUS_CHECKSUM_ERR = 0xE4        #  checksum error
 STATUS_UNSUPPORTED = 0xE5         #  unsupported function code
 STATUS_INVALID_DATA = 0xE6        #  invalid data
 
-# ── Control mode constants (§4.3.13) ──
+# ── Control mode constants (§4.3.22, 0x62) ──
 MODE_OPEN_LOOP = 0
 MODE_CLOSED_LOOP = 1
 MODE_TORQUE = 2
+
+# ── Motor status constants (§4.3.13, 0x2C) ──
+MOTOR_STOPPED    = 0  # 停止状态
+MOTOR_COMPLETED  = 1  # 完成任务状态
+MOTOR_RUNNING    = 2  # 正在运行
+MOTOR_OVERLOAD   = 3  # 过载状态
+MOTOR_STALLED    = 4  # 堵转状态
+MOTOR_UNDERVOLT  = 5  # 欠压状态
 
 # ── Direction constants ──
 DIR_CW = 0   # clockwise (or positive)
